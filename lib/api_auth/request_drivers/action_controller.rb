@@ -3,6 +3,13 @@ module ApiAuth
     class ActionControllerRequest # :nodoc:
       include ApiAuth::Helpers
 
+      ApiAuth.register_driver 'ActionController::Request',    self
+      ApiAuth.register_driver 'ActionController::CgiRequest', self
+
+      unless defined?(ActionDispatch)
+        ApiAuth.register_driver 'ActionController::TestRequest', self
+      end
+
       def initialize(request)
         @request = request
         fetch_headers

@@ -3,6 +3,8 @@ module ApiAuth
     class CurbRequest # :nodoc:
       include ApiAuth::Helpers
 
+      ApiAuth.register_driver 'Curl::Easy', self
+
       def initialize(request)
         @request = request
         fetch_headers

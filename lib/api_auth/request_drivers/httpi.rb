@@ -3,6 +3,8 @@ module ApiAuth
     class HttpiRequest # :nodoc:
       include ApiAuth::Helpers
 
+      ApiAuth.register_driver 'HTTPI::Request', self
+
       def initialize(request)
         @request = request
         fetch_headers

@@ -67,9 +67,25 @@ module ApiAuth
       b64_encode(Digest::SHA2.new(512).digest(random_bytes))
     end
 
+    def register_driver(request_klass, driver_klass)
+      if existing = drivers[request_klass.to_s]
+        raise "Cannot override existing driver #{existing} for request type #{request_klass}"
+      else
+        drivers[request_klass.to_s] = driver_klass
+      end
+    end
+
+    def lookup_driver(request_klass)
+      drivers[request_klass.name]
+    end
+
     private
 
     AUTH_HEADER_PATTERN = /APIAuth(?:-HMAC-(MD5|SHA(?:1|224|256|384|512)?))? ([^:]+):(.+)$/
+
+    def drivers
+      @drivers ||= {}
+    end
 
     def request_within_time_window?(headers)
       # 900 seconds is 15 minutes

@@ -4,6 +4,10 @@ module ApiAuth
     class NetHttpRequest # :nodoc:
       include ApiAuth::Helpers
 
+      ApiAuth.register_driver 'Net::HTTP::Get', self
+      ApiAuth.register_driver 'Net::HTTP::Put', self
+      ApiAuth.register_driver 'Net::HTTP::Post', self
+
       def initialize(request)
         @request = request
         @headers = fetch_headers

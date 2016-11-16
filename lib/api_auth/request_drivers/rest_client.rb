@@ -6,6 +6,8 @@ module ApiAuth
     class RestClientRequest # :nodoc:
       include ApiAuth::Helpers
 
+      ApiAuth.register_driver 'RestClient::Request', RestClientRequest
+
       def initialize(request)
         @request = request
         @headers = fetch_headers

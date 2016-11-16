@@ -1,8 +1,6 @@
 module ApiAuth
   # Builds the canonical string given a request object.
   class Headers
-    include RequestDrivers
-
     def initialize(request)
       @original_request = request
       @request = initialize_request_driver(request)
@@ -10,34 +8,9 @@ module ApiAuth
     end
 
     def initialize_request_driver(request)
-      new_request =
-        case request.class.to_s
-        when /Net::HTTP/
-          NetHttpRequest.new(request)
-        when /RestClient/
-          RestClientRequest.new(request)
-        when /Curl::Easy/
-          CurbRequest.new(request)
-        when /ActionController::Request/
-          ActionControllerRequest.new(request)
-        when /ActionController::TestRequest/
-          if defined?(ActionDispatch)
-            ActionDispatchRequest.new(request)
-          else
-            ActionControllerRequest.new(request)
-          end
-        when /ActionDispatch::Request/
-          ActionDispatchRequest.new(request)
-        when /ActionController::CgiRequest/
-          ActionControllerRequest.new(request)
-        when /HTTPI::Request/
-          HttpiRequest.new(request)
-        when /Faraday::Request/
-          FaradayRequest.new(request)
-        end
+      request_klass = ApiAuth.lookup_driver(request.class)
 
-      return new_request if new_request
-      return RackRequest.new(request) if request.is_a?(Rack::Request)
+      return request_klass.new(request) if request_klass
       raise UnknownHTTPRequest, "#{request.class} is not yet supported."
     end
     private :initialize_request_driver
