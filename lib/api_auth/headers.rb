@@ -32,6 +32,8 @@ module ApiAuth
           ActionControllerRequest.new(request)
         when /HTTPI::Request/
           HttpiRequest.new(request)
+        when /Faraday::Env/
+          FaradayEnv.new(request)
         when /Faraday::Request/
           FaradayRequest.new(request)
         when /HTTP::Request/

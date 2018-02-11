@@ -82,5 +82,22 @@ module ApiAuth
         fetch_headers
       end
     end
+
+    class FaradayEnv < FaradayRequest # :nodoc:
+      def fetch_headers
+        @headers = capitalize_keys @request.request_headers
+      end
+
+      def request_uri
+        @request.url.request_uri
+      end
+
+      private
+
+      def set_header(key, value)
+        @request.request_headers[key] = value
+        fetch_headers
+      end
+    end
   end
 end
