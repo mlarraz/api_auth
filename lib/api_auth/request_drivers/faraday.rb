@@ -10,8 +10,7 @@ module ApiAuth
       end
 
       def set_auth_header(header)
-        @request.headers['Authorization'] = header
-        fetch_headers
+        set_header('Authorization', header)
         @request
       end
 
@@ -22,8 +21,7 @@ module ApiAuth
 
       def populate_content_md5
         return unless %w[POST PUT].include?(@request.method.to_s.upcase)
-        @request.headers['Content-MD5'] = calculated_md5
-        fetch_headers
+        set_header('Content-MD5', calculated_md5)
       end
 
       def md5_mismatch?
@@ -62,8 +60,7 @@ module ApiAuth
       end
 
       def set_date
-        @request.headers['DATE'] = Time.now.utc.httpdate
-        fetch_headers
+        set_header('DATE', Time.now.utc.httpdate)
       end
 
       def timestamp
@@ -78,6 +75,11 @@ module ApiAuth
 
       def find_header(keys)
         keys.map { |key| @headers[key] }.compact.first
+      end
+
+      def set_header(key, value)
+        @request.headers[key] = value
+        fetch_headers
       end
     end
   end
