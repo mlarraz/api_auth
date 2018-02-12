@@ -36,6 +36,8 @@ module ApiAuth
           FaradayRequest.new(request)
         when /HTTP::Request/
           HttpRequest.new(request)
+        when 'Hash'
+          GenericRequest.new(request)
         end
 
       return new_request if new_request
